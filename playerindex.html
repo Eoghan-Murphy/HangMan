@@ -8,7 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
-    <title>Hello, world!</title>
+    <title>Hangman - Player</title>
   </head>
   <body>
     <form action="">
@@ -18,7 +18,7 @@
             <h1>HangMan!</h1>
         </center>
         <div class="row justify-content-center pt-3">
-          <div class="col-sm-3">
+          <div id = "input_letter" class="col-sm-3">
               <input id="g" class="text-center form-control form-control-lg" type="text" placeholder="Enter a Letter" />
           </div>
         </div>
@@ -27,6 +27,13 @@
               <center>
                 <button class="btn btn-primary">Guess</button>
               </center>
+            </div>
+        </div>
+        <div class="row justify-content-center pt-3">
+              <div class="col-sm-3">
+                <div id = "error" class="alert alert-danger" style = "visibility: hidden;">
+                  <strong>Incorrect Format!</strong> Please enter a single letter.
+                </div>
             </div>
         </div>
 
@@ -42,14 +49,22 @@
     <script>
       $(function(){
         var socket = io();
-        $('form').submit(function(){
-          socket.emit('guess', $('#g').val());
-          $('#g').val('');
-          return false;
-        });
-        socket.on('guess', function(gue){
 
+        $('form').submit(function(){
+          var g = $('#g').val();
+          if(g.length == 1 && g.match("^[a-zA-Z\(\)]+$")){
+            $('#error').css('visibility', 'hidden');
+            socket.emit('guess', g.toLowerCase());
+            $('#g').val('');
+            return false;
+          }
+          else{
+            $('#error').css('visibility', 'visible');
+            $('#g').val('');
+            return false;
+          }
         });
+
       });
     </script>
 
